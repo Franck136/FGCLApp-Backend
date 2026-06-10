@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Technicien;
@@ -111,5 +111,44 @@ class TechnicienController extends Controller
         $technicien->delete();
 
         return response()->json(['message' => 'Fiche technicien supprimée.']);
+    }
+
+
+    // GET /api/techniciens/disponibles
+    public function disponibles()
+    {
+        $techniciens = Technicien::with([
+            'user:id,nom,prenom,telephone,photo',
+            'specialites:id,nom',
+        ])
+        ->where('disponible', true)
+        ->get();
+
+        return response()->json($techniciens);
+    }
+
+    // GET /api/techniciens/{id}/interventions
+    public function interventions(Technicien $technicien)
+    {
+        $interventions = $technicien->user
+            ->interventions()
+            ->with('client:id,raison_sociale', 'contrat:id,reference')
+            ->orderBy('date_planifiee', 'desc')
+            ->paginate(20);
+
+        return response()->json($interventions);
+    }
+
+    // GET /api/techniciens/mon-profil
+    public function monProfil(Request $request)
+    {
+        $technicien = Technicien::where('user_id', $request->user()->id)
+            ->with([
+                'user:id,nom,prenom,email,telephone,photo',
+                'specialites:id,nom',
+            ])
+            ->firstOrFail();
+
+        return response()->json($technicien);
     }
 }

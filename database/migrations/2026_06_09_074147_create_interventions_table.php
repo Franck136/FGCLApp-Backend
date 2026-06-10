@@ -39,6 +39,7 @@ return new class extends Migration
                 'terminee',
                 'annulee',
             ])->default('planifiee');
+            //Equipement
 
             // Dates — pilotage BDD
             $table->dateTime('date_planifiee');

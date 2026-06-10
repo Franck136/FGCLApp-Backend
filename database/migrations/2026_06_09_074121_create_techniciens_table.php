@@ -18,7 +18,7 @@ return new class extends Migration
                   ->cascadeOnDelete();
 
             // Données de pilotage BDD
-            $table->string('specialite', 150); // ex: "reseau,hardware,software"
+            // $table->string('specialite', 150); // ex: "reseau,hardware,software"
             $table->string('zone_intervention', 150);
             $table->enum('type_contrat_travail', ['CDI', 'CDD', 'stagiaire', 'prestataire']);
             $table->date('date_embauche')->nullable();

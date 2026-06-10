@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contrat;
@@ -152,5 +152,36 @@ class ContratController extends Controller
             $contrat->pdf_path,
             'Contrat-' . $contrat->reference . '.pdf'
         );
+    }
+
+    // POST /api/contrats/{id}/renouveler
+    public function renouveler(Contrat $contrat)
+    {
+        if ($contrat->statut === 'resilie') {
+            return response()->json([
+                'message' => 'Impossible de renouveler un contrat résilié.',
+            ], 422);
+        }
+
+        $nouveau = Contrat::create([
+            'client_id'           => $contrat->client_id,
+            'commercial_id'       => $contrat->commercial_id,
+            'reference'           => $contrat->reference . '-R' . $contrat->pdf_version,
+            'type_contrat'        => $contrat->type_contrat,
+            'date_signature'      => now(),
+            'date_debut'          => $contrat->date_fin,
+            'date_fin'            => $contrat->date_fin->addMonths($contrat->duree_mois),
+            'duree_mois'          => $contrat->duree_mois,
+            'renouvellement_auto' => $contrat->renouvellement_auto,
+            'statut'              => 'actif',
+        ]);
+
+        $contrat->update(['statut' => 'expire']);
+
+        return response()->json([
+            'message'         => 'Contrat renouvelé avec succès.',
+            'ancien_contrat'  => $contrat->reference,
+            'nouveau_contrat' => $nouveau->load('client:id,raison_sociale'),
+        ], 201);
     }
 }

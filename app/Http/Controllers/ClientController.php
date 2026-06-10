@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Client;
@@ -52,9 +52,6 @@ class ClientController extends Controller
             'poste_responsable'     => 'nullable|string|max:100',
             'telephone_responsable' => 'nullable|string|max:20',
             'email_responsable'     => 'nullable|email',
-            'nom_contact2'          => 'nullable|string|max:150',
-            'telephone_contact2'    => 'nullable|string|max:20',
-            'email_contact2'        => 'nullable|email',
             'statut'                => 'sometimes|in:actif,inactif,suspendu',
             'date_debut_relation'   => 'nullable|date',
             'commercial_id'         => 'nullable|exists:users,id',
@@ -114,5 +111,22 @@ class ClientController extends Controller
         $client->delete();
 
         return response()->json(['message' => 'Client supprimé.']);
+    }
+
+    // GET /api/clients/{id}/statistiques
+    public function statistiques(Client $client)
+    {
+        return response()->json([
+            'client'                   => $client->raison_sociale,
+            'contrats_total'           => $client->contrats()->count(),
+            'contrats_actifs'          => $client->contrats()->where('statut', 'actif')->count(),
+            'contrats_expires'         => $client->contrats()->where('statut', 'expire')->count(),
+            'interventions_total'      => $client->interventions()->count(),
+            'interventions_en_cours'   => $client->interventions()->where('statut', 'en_cours')->count(),
+            'interventions_terminees'  => $client->interventions()->where('statut', 'terminee')->count(),
+            'equipements_total'        => $client->equipements()->count(),
+            'equipements_hors_service' => $client->equipements()->where('etat', 'hors_service')->count(),
+            'cout_total_interventions' => $client->interventions()->sum('cout'),
+        ]);
     }
 }
