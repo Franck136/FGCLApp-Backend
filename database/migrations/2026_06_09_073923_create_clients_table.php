@@ -25,6 +25,10 @@ return new class extends Migration
             $table->string('poste_responsable', 100)->nullable();
             $table->string('telephone_responsable', 20)->nullable();
             $table->string('email_responsable', 150)->nullable();
+            //Contact secondaire
+            $table->string('nom_contact2', 150)->nullable();
+            $table->string('telephone_contact2', 20)->nullable();
+            $table->string('email_contact2', 150)->nullable();
 
             $table->enum('statut', ['actif', 'inactif', 'suspendu'])->default('actif');
             $table->date('date_debut_relation')->nullable();

@@ -13,7 +13,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SpecialiteController;
 use App\Http\Controllers\RapportController;
 use App\Http\Controllers\SearchController;
-use App\Http\Controllers\AlerteController;
+use App\Http\Controllers\AlertController;
 
 // ══ AUTH (publique) ══
 Route::post('/login', [AuthController::class, 'login']);
@@ -50,7 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('specialites/{specialite}',     [SpecialiteController::class, 'destroy']);
 
         // Alertes manuelles
-        Route::post('admin/generer-alertes',          [AlerteController::class, 'generer']);
+        Route::post('admin/generer-alertes',          [AlertController::class, 'generer']);
     });
 
     // ══ ADMIN + COMMERCIAL ══
