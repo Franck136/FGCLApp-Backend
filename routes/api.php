@@ -70,17 +70,18 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('equipements', EquipementController::class);
         Route::get('equipements/{equipement}/interventions', [EquipementController::class, 'interventions']);
 
+        // ══ TECHNICIEN — son propre profil ══
+    Route::middleware('role:technicien')->group(function () {
+        Route::get('techniciens/MonProfil',          [TechnicienController::class, 'monProfil']);
+        Route::put('interventions/{intervention}/statut', [InterventionController::class, 'update']);
+    });
+    
         // Techniciens
         Route::apiResource('techniciens', TechnicienController::class);
         Route::get('techniciens/disponibles',         [TechnicienController::class, 'disponibles']);
         Route::get('techniciens/{technicien}/interventions', [TechnicienController::class, 'interventions']);
     });
 
-    // ══ TECHNICIEN — son propre profil ══
-    Route::middleware('role:technicien')->group(function () {
-        Route::get('techniciens/mon-profil',          [TechnicienController::class, 'monProfil']);
-        Route::put('interventions/{intervention}/statut', [InterventionController::class, 'update']);
-    });
 
     // ══ INTERVENTIONS ══
     // Lecture : tous les rôles

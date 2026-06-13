@@ -49,7 +49,7 @@ class ContratController extends Controller
             'date_fin'           => 'required|date|after:date_debut',
             'renouvellement_auto'=> 'boolean',
             'statut'             => 'sometimes|in:actif,suspendu,expire,resilie',
-            'pdf'                => 'nullable|mimes:pdf|max:10240',
+            'pdf'                => 'required|mimes:pdf|max:10240',
         ]);
 
         // Calcul automatique de la durée en mois
