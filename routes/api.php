@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ContratController;
+use App\Http\Controllers\ClientEspaceController;
 use App\Http\Controllers\EquipementController;
 use App\Http\Controllers\TechnicienController;
 use App\Http\Controllers\InterventionController;
@@ -37,6 +38,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/notifications/lire-tout',            [NotificationController::class, 'marquerToutesLues']);
     Route::put('/notifications/{notification}/lire',  [NotificationController::class, 'marquerLue']);
     Route::delete('/notifications/{notification}',    [NotificationController::class, 'destroy']);
+
+    // ── ESPACE CLIENT ──
+Route::middleware('role:client')->prefix('client')->group(function () {
+    Route::get('dashboard',              [ClientEspaceController::class, 'dashboard']);
+    Route::get('contrats',               [ClientEspaceController::class, 'contrats']);
+    Route::get('contrats/{contrat}/pdf', [ClientEspaceController::class, 'contratPdf']);
+    Route::get('interventions',          [ClientEspaceController::class, 'interventions']);
+    Route::get('equipements',            [ClientEspaceController::class, 'equipements']);
+});
 
     // Spécialités — lecture : tous | écriture : admin
     Route::get('/specialites',          [SpecialiteController::class, 'index']);
@@ -75,7 +85,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('techniciens/MonProfil',          [TechnicienController::class, 'monProfil']);
         Route::put('interventions/{intervention}/statut', [InterventionController::class, 'update']);
     });
-    
+
         // Techniciens
         Route::apiResource('techniciens', TechnicienController::class);
         Route::get('techniciens/disponibles',         [TechnicienController::class, 'disponibles']);
